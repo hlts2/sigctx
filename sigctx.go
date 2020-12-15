@@ -12,7 +12,7 @@ import (
 var (
 	// TerminateLimit is a maximum count of received signals.
 	// If the limit is reached, the process will be forcibly shutdown.
-	TerminateLimit = 3
+	TerminateLimit = 1024
 )
 
 // WithCancel returns a copy of parent with a new Done channel. The returned
