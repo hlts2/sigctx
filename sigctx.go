@@ -13,7 +13,15 @@ var (
 	// TerminateLimit is a maximum count of received signals.
 	// If the limit is reached, the process will be forcibly shutdown.
 	TerminateLimit = 1024
+
+	// Log is used for logging.
+	Log Logger = new(log.Logger)
 )
+
+// Logger represents an interface for logging.
+type Logger interface {
+	Print(v ...interface{})
+}
 
 // WithCancel returns a copy of parent with a new Done channel. The returned
 // context's Done channel is closed when the returned cancel function is called
@@ -48,11 +56,12 @@ func WithCancel(parent context.Context, sigs ...os.Signal) (context.Context, con
 
 			switch {
 			case retries == 1:
-				log.Print(fmt.Sprintf("received %v, graceful shutdown", sig))
+				Log.Print(fmt.Sprintf("received %v, graceful shutdown", sig))
 			case retries >= TerminateLimit:
-				log.Fatal(fmt.Sprintf("received %v, signals %d times, aborting", sig, retries))
+				Log.Print(fmt.Sprintf("received %v, signals %d times, aborting", sig, retries))
+				return
 			default:
-				log.Print(fmt.Sprintf("received %v", sig))
+				Log.Print(fmt.Sprintf("received %v", sig))
 			}
 		}
 	}()
